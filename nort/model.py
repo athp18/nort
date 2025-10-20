@@ -58,7 +58,7 @@ def check_familiarization(features_familiar, svm_classifier, fps=30):
     This is the exclusion criteria from the protocol.
     """
     print("\n" + "="*50)
-    print("FAMILIARIZATION PHASE CHECK (Exclusion Criteria)")
+    print("Checking familiarization phase...")
     print("="*50)
 
     # Predict exploration

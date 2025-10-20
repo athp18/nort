@@ -4,13 +4,16 @@ from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
 import pickle
 
+
 def train_svm(X, y, test_size=0.2, gamma=1e-4, C=1.0, return_metrics=False):
     """Train SVM classifier for exploration detection.
 
     If return_metrics=True, also return a dict with metrics.
     """
-    X_tr, X_val, y_tr, y_val = train_test_split(X, y, test_size=test_size, stratify=y, random_state=42)
-    clf = SVC(kernel='rbf', gamma=gamma, C=C, probability=True)
+    X_tr, X_val, y_tr, y_val = train_test_split(
+        X, y, test_size=test_size, stratify=y, random_state=42
+    )
+    clf = SVC(kernel="rbf", gamma=gamma, C=C, probability=True)
     clf.fit(X_tr, y_tr)
 
     train_acc = clf.score(X_tr, y_tr)
@@ -24,16 +27,24 @@ def train_svm(X, y, test_size=0.2, gamma=1e-4, C=1.0, return_metrics=False):
     print("\nReport:\n", report)
 
     if return_metrics:
-        return clf, {"train_acc": train_acc, "val_acc": val_acc, "confusion_matrix": cm, "classification_report": report}
+        return clf, {
+            "train_acc": train_acc,
+            "val_acc": val_acc,
+            "confusion_matrix": cm,
+            "classification_report": report,
+        }
     return clf
 
-def save_model(model, path='nor_svm.pkl'):
-    with open(path, 'wb') as f:
+
+def save_model(model, path="nor_svm.pkl"):
+    with open(path, "wb") as f:
         pickle.dump(model, f)
 
-def load_model(path='nor_svm.pkl'):
-    with open(path, 'rb') as f:
+
+def load_model(path="nor_svm.pkl"):
+    with open(path, "rb") as f:
         return pickle.load(f)
+
 
 def analyze_nor_test(features_familiar, features_novel, model, fps=30):
     """Apply SVM to compute exploration metrics and discrimination index."""
@@ -49,17 +60,25 @@ def analyze_nor_test(features_familiar, features_novel, model, fps=30):
     DI = 100 * (time_nov - time_fam) / (total + 1e-8)
     pct_nov = 100 * time_nov / (total + 1e-8)
 
-    print(f"Familiar: {time_fam:.2f}s | Novel: {time_nov:.2f}s | DI={DI:.2f}% | Novel%={pct_nov:.2f}%")
-    return {'DI': DI, 'pct_novel': pct_nov, 'time_familiar': time_fam, 'time_novel': time_nov}
+    print(
+        f"Familiar: {time_fam:.2f}s | Novel: {time_nov:.2f}s | DI={DI:.2f}% | Novel%={pct_nov:.2f}%"
+    )
+    return {
+        "DI": DI,
+        "pct_novel": pct_nov,
+        "time_familiar": time_fam,
+        "time_novel": time_nov,
+    }
+
 
 def check_familiarization(features_familiar, svm_classifier, fps=30):
     """
     Check if mouse explored >20s in familiarization phase.
     This is the exclusion criteria from the protocol.
     """
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print("Checking familiarization phase...")
-    print("="*50)
+    print("=" * 50)
 
     # Predict exploration
     valid = ~np.isnan(features_familiar).any(axis=1)
@@ -78,7 +97,7 @@ def check_familiarization(features_familiar, svm_classifier, fps=30):
         exclude = True
 
     return {
-        'exploration_time_sec': float(time_exploring),
-        'frames_exploring': frames_exploring,
-        'exclude': exclude
+        "exploration_time_sec": float(time_exploring),
+        "frames_exploring": frames_exploring,
+        "exclude": exclude,
     }

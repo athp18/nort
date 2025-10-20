@@ -1,0 +1,12 @@
+.DS_Store
+*/.DS_Store
+nort.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pyzw
+*.pyzwz

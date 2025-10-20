@@ -51,3 +51,34 @@ def analyze_nor_test(features_familiar, features_novel, model, fps=30):
 
     print(f"Familiar: {time_fam:.2f}s | Novel: {time_nov:.2f}s | DI={DI:.2f}% | Novel%={pct_nov:.2f}%")
     return {'DI': DI, 'pct_novel': pct_nov, 'time_familiar': time_fam, 'time_novel': time_nov}
+
+def check_familiarization(features_familiar, svm_classifier, fps=30):
+    """
+    Check if mouse explored >20s in familiarization phase.
+    This is the exclusion criteria from the protocol.
+    """
+    print("\n" + "="*50)
+    print("FAMILIARIZATION PHASE CHECK (Exclusion Criteria)")
+    print("="*50)
+
+    # Predict exploration
+    valid = ~np.isnan(features_familiar).any(axis=1)
+    exploring = np.zeros(len(features_familiar), dtype=int)
+    exploring[valid] = svm_classifier.predict(features_familiar[valid])
+
+    # Calculate time
+    frames_exploring = int(np.sum(exploring))
+    time_exploring = frames_exploring / fps
+
+    print(f"\nFamiliarization exploration time: {time_exploring:.2f} seconds")
+
+    if not time_exploring > 20:
+        print(f"Mouse explored for {time_exploring:.2f}s < {20}s")
+        print(f"Consider excluding this mouse from analysis")
+        exclude = True
+
+    return {
+        'exploration_time_sec': float(time_exploring),
+        'frames_exploring': frames_exploring,
+        'exclude': exclude
+    }

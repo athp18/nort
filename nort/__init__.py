@@ -18,6 +18,7 @@ from .model import (
     save_model,
     load_model,
     analyze_nor_test,
+    check_familiarization,
 )
 
 from .validation import (
@@ -34,7 +35,7 @@ __all__ = [
     "filter_by_likelihood", "calculate_velocity", "compute_median_frame",
     "find_largest_objects", "get_object_vertices",
     # model
-    "train_svm", "save_model", "load_model", "analyze_nor_test",
+    "train_svm", "save_model", "load_model", "analyze_nor_test", "check_familiarization",
     # validation
     "check_tracking_quality", "plot_likelihoods", "summarize_low_confidence", "warn_if_poor_quality"
 ]
